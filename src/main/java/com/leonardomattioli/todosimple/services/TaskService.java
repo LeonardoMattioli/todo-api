@@ -3,6 +3,8 @@ package com.leonardomattioli.todosimple.services;
 import com.leonardomattioli.todosimple.models.Task;
 import com.leonardomattioli.todosimple.models.User;
 import com.leonardomattioli.todosimple.repositories.TaskRepository;
+import com.leonardomattioli.todosimple.services.exceptions.DataBindingViolationException;
+import com.leonardomattioli.todosimple.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,7 @@ public class TaskService {
 
     public Task findById(Long id) {
         Optional<Task> task = this.taskRepository.findById(id);
-        return task.orElseThrow(() -> new RuntimeException(
+        return task.orElseThrow(() -> new ObjectNotFoundException(
                 "tarefa nao encontrada id: " + id + ", Tipo: " + Task.class.getName()
         ));
     }
@@ -52,7 +54,7 @@ public class TaskService {
         try {
             this.taskRepository.deleteById(id);
         } catch (Exception e) {
-            throw new RuntimeException("Não é possível escolher");
+            throw new DataBindingViolationException("Não é possível excluir pois tem entidades relacionadas");
         }
     }
 }
